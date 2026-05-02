@@ -1,16 +1,330 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gemini AI Assistant</title>
-    <meta name="description" content="A premium AI chat interface powered by Google Gemini, designed for testing and high-performance interaction." />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Chennai API Tester</title>
+    <meta name="description" content="A premium AI chat interface powered by Google Chennai (Gemini) API. Built with HTML and CSS for high-performance testing.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .chat-container {
+            height: calc(100vh - 160px);
+            scrollbar-width: thin;
+            scrollbar-color: #e2e8f0 transparent;
+        }
+
+        .dark .chat-container {
+            scrollbar-color: #334155 transparent;
+        }
+
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-track { background: transparent; }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .dark .chat-container::-webkit-scrollbar-thumb { background: #334155; }
+
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        .animate-bounce-subtle { animation: bounce-subtle 1s infinite; }
+
+        .glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Smooth transitions */
+        * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+    </style>
+</head>
+<body class="bg-[#f5f7f9] text-gray-900 transition-colors duration-300 dark:bg-[#0f0f0f] dark:text-white">
+    <div id="app" class="min-h-screen w-full bg-[radial-gradient(circle_at_top_right,_#e2e8f0,_transparent)] dark:bg-[radial-gradient(circle_at_top_right,_#1a1a1a,_transparent)]">
+        
+        <!-- Navbar -->
+        <nav class="fixed top-0 w-full z-20 border-b bg-white/80 dark:bg-[#1a1a1a]/80 border-gray-200 dark:border-white/5 px-6 py-4 flex justify-between items-center glass">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                    <i data-lucide="bot"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight leading-none">Chennai AI</h1>
+                    <span class="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">Premium Tester</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="settingsBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" title="API Settings">
+                    <i data-lucide="settings"></i>
+                </button>
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10">
+                    <i id="themeIcon" data-lucide="moon"></i>
+                </button>
+                <button id="clearBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-red-500" title="Clear Chat">
+                    <i data-lucide="trash-2"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Chat Area -->
+        <main class="max-w-3xl mx-auto pt-24 pb-32 px-4 w-full">
+            <div id="messagesList" class="space-y-6">
+                <!-- Messages will be injected here -->
+            </div>
+            
+            <!-- Key Missing State (Default) -->
+            <div id="keyPrompt" class="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                <div class="w-16 h-16 rounded-3xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <i data-lucide="key" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold">API Key Required</h2>
+                    <p class="text-sm opacity-60 max-w-xs mx-auto">
+                        To start testing the Google Chennai API, please enter your API key in the settings.
+                    </p>
+                </div>
+                <button id="promptSettingsBtn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-bold transition-all active:scale-95 shadow-lg shadow-blue-500/20">
+                    Enter Key Now
+                </button>
+            </div>
+
+            <div id="loadingIndicator" class="hidden flex gap-4 mt-6">
+                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center">
+                    <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white dark:bg-[#1a1a1a] shadow-sm border border-transparent dark:border-white/5">
+                    <div class="flex gap-1">
+                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="bottomAnchor"></div>
+        </main>
+
+        <!-- Input Section -->
+        <div class="fixed bottom-0 w-full bg-transparent px-4 pb-6 glass">
+            <form id="chatForm" class="max-w-3xl mx-auto">
+                <div class="relative flex items-center p-2 rounded-2xl border bg-white dark:bg-[#1a1a1a] border-gray-200 dark:border-white/10 focus-within:border-blue-500/50 shadow-2xl transition-all">
+                    <input
+                        id="chatInput"
+                        type="text"
+                        placeholder="Type your message here..."
+                        class="flex-1 bg-transparent px-4 py-2 outline-none text-[15px]"
+                        autocomplete="off"
+                        disabled
+                    />
+                    <button
+                        id="sendBtn"
+                        type="submit"
+                        disabled
+                        class="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-800 text-white rounded-xl transition-all shadow-md active:scale-95"
+                    >
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div class="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/10 shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="key" class="text-blue-500"></i>
+                        <h2 class="text-xl font-bold">API Settings</h2>
+                    </div>
+                    <button id="closeSettings" class="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <p class="text-sm mb-6 text-gray-500 dark:text-gray-400 leading-relaxed">
+                    Enter your <strong>Google Chennai (Gemini) API Key</strong> to test the connection. Your key is stored 100% locally in your browser.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest opacity-50">Your API Key</label>
+                        <input 
+                            id="apiKeyInput"
+                            type="password"
+                            placeholder="AIzaSy..."
+                            class="w-full p-4 rounded-2xl border bg-gray-50 dark:bg-[#0f0f0f] border-gray-200 dark:border-white/10 focus:border-blue-500/50 outline-none transition-all"
+                        />
+                    </div>
+                    <button id="saveKeyBtn" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98]">
+                        Save & Activate
+                    </button>
+                </div>
+                
+                <div class="mt-6 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                    <h3 class="text-[11px] font-bold text-blue-500 uppercase tracking-wider mb-1">Testing Information</h3>
+                    <p class="text-[11px] opacity-60 leading-relaxed">
+                        This website is purely built with HTML and CSS for ultra-fast performance. Monitor usage in Google AI Studio.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripting -->
+    <script>
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // State Management
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        let messages = [{ role: 'assistant', content: 'Hello! I am your AI assistant. How can I help you test the Chennai API today?' }];
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+
+        // Elements
+        const messagesList = document.getElementById('messagesList');
+        const chatInput = document.getElementById('chatInput');
+        const chatForm = document.getElementById('chatForm');
+        const sendBtn = document.getElementById('sendBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const settingsModal = document.getElementById('settingsModal');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const keyPrompt = document.getElementById('keyPrompt');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // Apply Theme
+        function applyTheme() {
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                themeIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIcon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+        applyTheme();
+
+        // Update UI State
+        function updateUIState() {
+            if (apiKey) {
+                keyPrompt.classList.add('hidden');
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                renderMessages();
+            } else {
+                keyPrompt.classList.remove('hidden');
+                messagesList.innerHTML = '';
+                chatInput.disabled = true;
+                sendBtn.disabled = true;
+            }
+        }
+        updateUIState();
+
+        // Render Messages
+        function renderMessages() {
+            messagesList.innerHTML = messages.map((msg, index) => `
+                <div class="flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} opacity-0 translate-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-forwards" style="animation-delay: ${index * 50}ms">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                        msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-white/10'
+                    }">
+                        <i data-lucide="${msg.role === 'user' ? 'user' : 'bot'}" class="w-4 h-4"></i>
+                    </div>
+                    <div class="max-w-[80%] p-4 rounded-2xl shadow-sm ${
+                        msg.role === 'user' 
+                            ? 'bg-blue-600 text-white rounded-tr-none' 
+                            : 'bg-white dark:bg-[#1a1a1a] dark:border dark:border-white/5 rounded-tl-none text-gray-800 dark:text-gray-200'
+                    }">
+                        <p class="text-[15px] leading-relaxed whitespace-pre-wrap font-medium">${msg.content}</p>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Gemini API Logic
+        async function getGeminiResponse(userPrompt) {
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userPrompt }] }]
+                    })
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error(error);
+                return "Error: Unable to connect to the API. Please check your key or connection.";
+            }
+        }
+
+        // Event Listeners
+        themeToggle.onclick = () => {
+            isDarkMode = !isDarkMode;
+            applyTheme();
+        };
+
+        document.getElementById('settingsBtn').onclick = () => {
+            apiKeyInput.value = apiKey;
+            settingsModal.classList.remove('hidden');
+        };
+
+        document.getElementById('promptSettingsBtn').onclick = () => {
+            settingsModal.classList.remove('hidden');
+        };
+
+        document.getElementById('closeSettings').onclick = () => {
+            settingsModal.classList.add('hidden');
+        };
+
+        document.getElementById('clearBtn').onclick = () => {
+            messages = [{ role: 'assistant', content: 'Chat cleared. How can I help you test today?' }];
+            renderMessages();
+        };
+
+        saveKeyBtn.onclick = () => {
+            apiKey = apiKeyInput.value.trim();
+            if (apiKey) {
+                localStorage.setItem('gemini_api_key', apiKey);
+                settingsModal.classList.add('hidden');
+                updateUIState();
+            }
+        };
+
+        chatForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text || !apiKey) return;
+
+            chatInput.value = '';
+            messages.push({ role: 'user', content: text });
+            renderMessages();
+
+            loadingIndicator.classList.remove('hidden');
+            const response = await getGeminiResponse(text);
+            loadingIndicator.classList.add('hidden');
+
+            messages.push({ role: 'assistant', content: response });
+            renderMessages();
+        };
+    </script>
+</body>
 </html>

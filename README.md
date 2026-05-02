@@ -1,9 +1,9 @@
-# 🚀 Google Chennai API Tester - Premium Chat Interface
+# 🚀 Google Chennai API Tester - Static HTML/CSS Edition
 
-A high-performance, professional AI chatbot interface built to test the capabilities of the **Google Chennai API** (powered by Gemini 1.5 Flash). This tool is designed for developers and testers to explore API limits, response speeds, and integration patterns in a secure, client-side environment.
+A high-performance, ultra-premium AI chatbot interface built to test the **Google Chennai API** (Gemini 1.5 Flash). This website is built entirely using **HTML, CSS, and Vanilla JavaScript**, making it lightning-fast, secure, and ready for instant deployment on GitHub Pages.
 
 ## 🧪 Project Objective
-The primary goal of this project is to provide a "Zero-Backend" testing environment for the **Google Chennai API**. Unlike typical AI apps, this project **does not store any API keys on any server**. Instead, it allows users to manually enter their own keys, which are stored securely in their browser's local storage for testing purposes.
+The primary goal of this project is to provide a "Zero-Install" testing environment for the **Google Chennai API**. This website requires **no Node.js, no NPM, and no installation**. Simply open the `index.html` file in any browser to start testing.
 
 ---
 
@@ -13,8 +13,7 @@ The primary goal of this project is to provide a "Zero-Backend" testing environm
 graph TD
     User((User)) -->|Enters API Key| Settings[Settings Modal]
     Settings -->|Stores Key| LocalStorage[(Browser LocalStorage)]
-    User -->|Sends Message| ChatUI[Chat Interface]
-    ChatUI -->|Reads Key| LocalStorage
+    User -->|Sends Message| ChatUI[HTML/CSS Interface]
     ChatUI -->|API Request| GeminiAPI[Google Gemini API]
     GeminiAPI -->|AI Response| ChatUI
     ChatUI -->|Renders Message| User
@@ -22,58 +21,44 @@ graph TD
 
 ---
 
-## ✨ Key Testing Features
-- **Manual API Key Entry**: Users can paste their own Google AI Studio keys to test connectivity.
-- **Client-Side Security**: No keys are ever uploaded or stored in environment files. Everything happens in your browser.
-- **Limit Testing**: Easily observe how the Gemini 1.5 Flash model behaves under different account tiers and quotas.
-- **Dark/Light Mode**: Premium UI testing across different visual environments.
-- **Auto-Scroll & Persistence**: Messages and settings persist across session refreshes.
+## ✨ Key Features
+- **Pure HTML & CSS**: No complex build tools or dependencies.
+- **Instant Deployment**: Designed specifically for **GitHub Pages**.
+- **Manual API Key Entry**: Users paste their own Google AI Studio keys for testing.
+- **Client-Side Security**: No keys are ever stored on a server. Everything happens in the browser.
+- **Premium Design**: Built with Tailwind CSS, Lucide Icons, and custom Glassmorphism effects.
+- **Dark Mode Support**: Seamlessly switch between light and dark aesthetics.
 
 ---
 
-## 🛠️ Technology Stack & Sector Details
-
-### 1. **Frontend Architecture**
-- **React 19**: Utilizing the latest concurrent rendering features for a smooth, lag-free UI.
-- **Vite 8**: Providing the fastest development and build cycles available in the modern JS ecosystem.
-
-### 2. **Design System**
-- **Tailwind CSS v4**: Implementing a robust utility-first design system with custom HSL color tokens.
-- **Framer Motion**: Powering all micro-interactions, layout transitions, and entry animations.
-
-### 3. **AI Logic Sector**
-- **Google Generative AI SDK**: Optimized wrapper for the `gemini-1.5-flash` model.
-- **Error Handling Sector**: Custom logic to capture and display API-specific errors (Quota limits, Invalid keys, etc.).
+## 🛠️ Technology Stack
+- **HTML5**: Semantic structure.
+- **CSS3 (Tailwind)**: Modern, responsive styling via CDN.
+- **Vanilla JavaScript**: Lightweight logic for API communication.
+- **Lucide Icons**: Professional vector iconography via CDN.
 
 ---
 
-## 🚀 How to Use (GitHub Pages)
-1. **Open the App**: Navigate to your deployed GitHub Pages URL.
-2. **Configure API**: Click the **Settings (Gear Icon)** or wait for the automatic prompt.
-3. **Paste Your Key**: Enter your API key from [Google AI Studio](https://aistudio.google.com/).
-4. **Start Chatting**: The bot will only activate once a valid key is provided.
+## 🚀 How to Deploy on GitHub Pages
+1. **Upload Files**: Simply push this `index.html` file and its assets to your GitHub repository.
+2. **Enable Pages**: Go to **Settings > Pages** and select the `main` branch as the source.
+3. **Go Live**: Your website will be live at `https://yourusername.github.io/your-repo-name`.
 
 ---
 
-## 📂 Local Development
+## 📂 Local Usage
 1. **Clone the Repository**
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Run App**:
-   ```bash
-   npm run dev
-   ```
+2. **Open the File**: Double-click `index.html` to run the app instantly.
+
+*Note: No installation required. No NPM needed.*
 
 ---
 
 ## 🏷️ Recommended Repository Names
 - `google-chennai-api-tester`
-- `gemini-key-tester`
-- `perfect-ai-interface`
-- `chennai-flash-hub`
+- `static-ai-interface`
+- `html-css-gemini-tester`
 
 ---
 
-*This project is purely for testing and educational purposes regarding Google's Generative AI infrastructure. Developed with precision to ensure a perfect testing experience.*
+*This project is built for professional testing of Google's AI infrastructure with a focus on simplicity and performance.*
